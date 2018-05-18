@@ -1,0 +1,18 @@
+<resources>
+    <style name="loadingText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_marginTop">24sp</item>
+    </style>
+
+    <style name="ClepsydraTheme" parent="Theme.AppCompat.NoActionBar" >
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:colorBackground">@color/dark1</item>
+        <item name="colorAccent">@color/secondary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="android:navigationBarColor">@color/dark2</item>
+        <item name="colorPrimaryDark">@color/dark2</item>
+        <item name="android:textColorPrimary">@color/white</item>
+    </style>
+</resources>
