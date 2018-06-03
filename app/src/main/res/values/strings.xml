@@ -1,7 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Clepsydra</string>
+    <string name="app">Clepsydra</string>
     <string name="access_token" tools:ignore="TypographyDashes">pk.eyJ1IjoibXJvbXVsdXMiLCJhIjoiY2poYnRxc3Z1MDU5MDNkcGNmeTU1amk0aiJ9.tKnjjt1qk8N9EFp8-1qNKw</string>
     <string name="loading" tools:ignore="TypographyEllipsis">Loading Clepsydra...</string>
     <string name="permissions_not_enabled">Clepsydra requires location permissions to function</string>
     <string name="request_permissions">Enable location permissions</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
