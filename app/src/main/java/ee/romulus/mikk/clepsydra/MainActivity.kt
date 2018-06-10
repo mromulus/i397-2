@@ -1,62 +1,38 @@
 package ee.romulus.mikk.clepsydra
 
-import android.Manifest
-import android.support.v7.app.AppCompatActivity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_main.*
-import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
+import android.support.v4.app.FragmentActivity
 import android.util.Log
-import android.view.View
-import android.widget.Toast
-import com.mapbox.mapboxsdk.Mapbox
-import ee.romulus.mikk.clepsydra.R.id.mapView
+import ee.romulus.mikk.clepsydra.models.GreetingViewModel
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
+  private lateinit var model: GreetingViewModel
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-//      val model = ViewModelProviders.of(this).get(MapViewModel::class.java)
-    Mapbox.getInstance(applicationContext, getString(R.string.access_token))
+    model = ViewModelProviders.of(this).get(GreetingViewModel::class.java)
 
-//    mapView.onCreate(savedInstanceState)
-
-//        mapView.getMapAsync({})
-
+    insertGreeting()
+    observeModel()
   }
 
-//    override fun onStart() {
-//        super.onStart()
-//        mapView.onStart()
-//    }
-//
-//    override fun onResume() {
-//        super.onResume()
-//        mapView.onResume()
-//
-//    }
-//    override fun onPause() {
-//        super.onPause()
-//        mapView.onPause()
-//    }
-//    override fun onStop() {
-//        super.onStop()
-//        mapView.onStop()
-//
-//    }
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        mapView.onSaveInstanceState(outState)
-//
-//    }
-//    override fun onLowMemory() {
-//        super.onLowMemory()
-//        mapView.onLowMemory()
-//
-//    }
-//    override fun onDestroy() {
-//        super.onDestroy()
-//        mapView.onDestroy()
-//    }
+  private fun insertGreeting() {
+    val beginTransaction = supportFragmentManager.beginTransaction()
+    beginTransaction.add(R.id.fragment_container, GreetingFragment())
+    beginTransaction.commit()
+  }
+
+  private fun observeModel() {
+    model.deviceReady.observe(this, Observer {
+      if(it!!) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, MapFragment())
+        transaction.commit()
+      }
+    })
+  }
 }

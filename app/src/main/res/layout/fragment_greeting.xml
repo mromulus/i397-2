@@ -35,4 +35,23 @@
         android:layout_marginTop="12dp"
         android:padding="13sp"
         android:text="@string/request_permissions" />
+
+    <TextView
+        style="@style/loadingText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/location_not_enabled"
+        android:visibility="gone"
+        android:text="@string/location_not_enabled" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/request_location"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:textColor="@color/alt"
+        android:layout_marginTop="12dp"
+        android:padding="13sp"
+        android:text="@string/request_location" />
 </LinearLayout>
