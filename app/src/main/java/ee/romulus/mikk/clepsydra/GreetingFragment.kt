@@ -15,14 +15,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import ee.romulus.mikk.clepsydra.models.GreetingViewModel
+import ee.romulus.mikk.clepsydra.models.AppViewModel
 import kotlinx.android.synthetic.main.fragment_greeting.*
 
 class GreetingFragment : Fragment() {
   private val requestPermissionCode = 10
   private val requiredPermissions = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
-  private lateinit var vm: GreetingViewModel
+  private lateinit var vm: AppViewModel
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle? ): View? {
@@ -34,7 +34,7 @@ class GreetingFragment : Fragment() {
   override fun onActivityCreated(savedInstanceState: Bundle?) {
     super.onActivityCreated(savedInstanceState)
 
-    vm = ViewModelProviders.of(activity!!).get(GreetingViewModel::class.java)
+    vm = ViewModelProviders.of(activity!!).get(AppViewModel::class.java)
 
     determineLocationEnabled()
     determinePermissions()

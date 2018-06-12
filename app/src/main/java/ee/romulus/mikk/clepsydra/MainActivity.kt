@@ -2,19 +2,21 @@ package ee.romulus.mikk.clepsydra
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.location.Location
+import android.location.LocationListener
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
-import android.util.Log
-import ee.romulus.mikk.clepsydra.models.GreetingViewModel
+import ee.romulus.mikk.clepsydra.models.AppViewModel
+import ee.romulus.mikk.clepsydra.services.BoundLocationManager
 
-class MainActivity : FragmentActivity() {
-  private lateinit var model: GreetingViewModel
+class MainActivity : FragmentActivity(), LocationListener {
+  private lateinit var model: AppViewModel
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    model = ViewModelProviders.of(this).get(GreetingViewModel::class.java)
+    model = ViewModelProviders.of(this).get(AppViewModel::class.java)
 
     insertGreeting()
     observeModel()
@@ -29,10 +31,26 @@ class MainActivity : FragmentActivity() {
   private fun observeModel() {
     model.deviceReady.observe(this, Observer {
       if(it!!) {
+        BoundLocationManager.bindLocationListenerIn(this, this, applicationContext)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.fragment_container, MapFragment())
         transaction.commit()
       }
     })
+  }
+
+  override fun onLocationChanged(location: Location?) {
+    model.addDistanceTravelled(model.location.value, location)
+    model.lastLocation.postValue(model.location.value)
+    model.location.postValue(location)
+  }
+
+  override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+  }
+
+  override fun onProviderEnabled(provider: String?) {
+  }
+
+  override fun onProviderDisabled(provider: String?) {
   }
 }
