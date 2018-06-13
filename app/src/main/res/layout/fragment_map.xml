@@ -24,7 +24,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/controls"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="120dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -38,14 +38,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.5" />
+            app:layout_constraintGuide_percent="0.4" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.33" />
+            app:layout_constraintGuide_percent="0.33333" />
 
         <android.support.constraint.Guideline
             android:id="@+id/guideline3"
@@ -58,20 +58,21 @@
             android:id="@+id/button1"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:textSize="24sp"
             android:layout_margin="0dp"
             android:padding="0dp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="@id/guideline2"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="start/stop" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="CP1"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintLeft_toLeftOf="@id/guideline2"
             app:layout_constraintRight_toRightOf="@id/guideline3"
@@ -82,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:text="CP2"
-            android:textSize="24sp"
+            android:textSize="20sp"
             app:layout_constraintBottom_toTopOf="@id/guideline"
             app:layout_constraintLeft_toLeftOf="@id/guideline3"
             app:layout_constraintRight_toRightOf="parent"
@@ -94,19 +95,145 @@
             android:layout_height="0dp"
             android:layout_margin="4dp"
             android:background="@color/white"
+            android:elevation="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guideline" >
 
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.33333" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.6666" />
+
             <TextView
-                android:id="@+id/distance"
+                android:id="@+id/fromStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/travelledFromStart"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@id/guideline4"
+                android:text="From start:" />
+
+            <TextView
+                android:id="@+id/travelledFromStart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/dark1"
-                android:textSize="24sp"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/fromStart"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@id/guideline4"
+                tools:text="456.8 m" />
+
+            <TextView
+                android:id="@+id/fromcp1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/cp1Text"
+                app:layout_constraintLeft_toLeftOf="@id/guideline4"
+                app:layout_constraintRight_toRightOf="@id/guideline5"
+                android:text="From CP1:" />
+
+            <LinearLayout
+                android:id="@+id/cp1Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/fromcp1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/guideline4"
+                app:layout_constraintRight_toRightOf="@id/guideline5">
+
+                <TextView
+                    android:id="@+id/travelledFromCP1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark1"
+                    android:textSize="14sp"
+
+                    tools:text="125.8 m" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" / "
+                    android:textColor="@color/dark1"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/distanceFromCP1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark1"
+                    android:textSize="14sp"
+                    tools:text="57.9 m" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fromcp2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#666"
+                android:textSize="14sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/cp2Text"
+                app:layout_constraintLeft_toLeftOf="@id/guideline5"
+                app:layout_constraintRight_toRightOf="parent"
+                android:text="From CP2:" />
+
+
+            <LinearLayout
+                android:id="@+id/cp2Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="@id/guideline5"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/fromcp2">
+
+                <TextView
+                    android:id="@+id/travelledFromCP2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark1"
+                    android:textSize="14sp"
+
+                    tools:text="225.8 m" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" / "
+                    android:textColor="@color/dark1"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/distanceFromCP2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dark1"
+                    android:textSize="14sp"
+                    tools:text="57.9 m" />
+            </LinearLayout>
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>

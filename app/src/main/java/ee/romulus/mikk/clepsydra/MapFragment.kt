@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.transition.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +23,6 @@ import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
-import java.util.*
 
 class MapFragment : Fragment(), LocationEngineListener {
   private lateinit var vm: AppViewModel
@@ -49,7 +47,7 @@ class MapFragment : Fragment(), LocationEngineListener {
 
     val mapViewInstance = mapView as MapView
     mapViewInstance.onCreate(savedInstanceState)
-    mapViewInstance.getMapAsync({
+    mapViewInstance.getMapAsync {
       map = it
 
       map!!.uiSettings.isZoomControlsEnabled = false
@@ -60,7 +58,7 @@ class MapFragment : Fragment(), LocationEngineListener {
       locationPlugin = LocationLayerPlugin(mapView, it, locationEngine)
       locationPlugin!!.renderMode = RenderMode.GPS
       locationPlugin!!.cameraMode = CameraMode.TRACKING_GPS
-    })
+    }
 
     observe()
   }
@@ -71,13 +69,32 @@ class MapFragment : Fragment(), LocationEngineListener {
   }
 
   private fun observeText() {
-    vm.totalDistance.observe(this, Observer {
-      val formatter = Formatter(StringBuilder(), Locale.UK)
+    vm.totalDistance.observe(this, Observer { travelledFromStart.text = formatDistance(it) })
+    vm.cp1Distance.observe(this, Observer { travelledFromCP1.text = formatDistance(it) })
+    vm.cp2Distance.observe(this, Observer { travelledFromCP2.text = formatDistance(it) })
 
-      distance.text = formatter.format(getString(R.string.distance_travelled), it).toString()
+    vm.location.observe(this, Observer {
+      if(vm.cp1Location.value != null) {
+        distanceFromCP1.text = formatDistance(it?.distanceTo(vm.cp1Location.value))
+      }
+
+      if(vm.cp2Location.value != null) {
+        distanceFromCP2.text = formatDistance(it?.distanceTo(vm.cp2Location.value))
+      }
     })
   }
 
+  private fun formatDistance(distance: Float?): String {
+    return if (distance != null) {
+      if(distance > 1000) {
+        getString(R.string.distance_travelled_km, distance / 1000f)
+      } else {
+        getString(R.string.distance_travelled_m, distance)
+      }
+    } else {
+      String()
+    }
+  }
 
   private fun observeButtons() {
     vm.enabled.observe(this, Observer {
@@ -89,10 +106,46 @@ class MapFragment : Fragment(), LocationEngineListener {
         button1.text = getString(R.string.button_start)
         button2.visibility = View.GONE
         button3.visibility = View.GONE
+
+        vm.startLocation.postValue(null)
+        vm.cp1Location.postValue(null)
+        vm.cp2Location.postValue(null)
       }
     })
 
-    button1.setOnClickListener { vm.enabled.postValue(vm.enabled.value?.not()) }
+    button1.setOnClickListener {
+      vm.enabled.postValue(vm.enabled.value?.not())
+
+      // get the location once
+      vm.location.observe(this, object: Observer<Location> {
+        override fun onChanged(location: Location?) {
+          vm.startLocation.postValue(location)
+          vm.location.removeObserver(this)
+        }
+      })
+    }
+
+    button2.setOnClickListener {
+      // get the location once
+      vm.cp1Distance.postValue(0f)
+      vm.location.observe(this, object: Observer<Location> {
+        override fun onChanged(location: Location?) {
+          vm.cp1Location.postValue(location)
+          vm.location.removeObserver(this)
+        }
+      })
+    }
+
+    button3.setOnClickListener {
+      // get the location once
+      vm.cp2Distance.postValue(0f)
+      vm.location.observe(this, object: Observer<Location> {
+        override fun onChanged(location: Location?) {
+          vm.cp2Location.postValue(location)
+          vm.location.removeObserver(this)
+        }
+      })
+    }
   }
 
   @SuppressLint("MissingPermission")
@@ -115,7 +168,7 @@ class MapFragment : Fragment(), LocationEngineListener {
     map?.animateCamera(
         CameraUpdateFactory.newLatLngZoom(
           LatLng(location.latitude, location.longitude),
-          27.0
+          22.0
         )
     )
   }

@@ -11,5 +11,7 @@
     <string name="request_location">Enable location</string>
     <string name="button_start">Start</string>
     <string name="button_stop">Stop</string>
-    <string name="distance_travelled">Travelled: %.02f m</string>
+
+    <string name="distance_travelled_m">%.01f m</string>
+    <string name="distance_travelled_km">%.02f km</string>
 </resources>

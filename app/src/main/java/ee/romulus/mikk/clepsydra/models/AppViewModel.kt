@@ -2,6 +2,7 @@ package ee.romulus.mikk.clepsydra.models
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import android.location.Location
@@ -10,13 +11,20 @@ class AppViewModel : ViewModel() {
   // for permissions
   val permissionGranted: MutableLiveData<Boolean> = MutableLiveData()
   val locationEnabled: MutableLiveData<Boolean> = MutableLiveData()
-  val deviceReady = Transformations.map(permissionGranted, { it.and(locationEnabled.value!!) })!!
+  val deviceReady = Transformations.map(permissionGranted) { it.and(locationEnabled.value!!) }!!
 
   val enabled: MutableLiveData<Boolean> = MutableLiveData()
   val location: MutableLiveData<Location> = MutableLiveData()
-  val lastLocation: MutableLiveData<Location> = MutableLiveData()
+//  val lastLocation: MutableLiveData<Location> = MutableLiveData()
 
+  val startLocation: MutableLiveData<Location> = MutableLiveData()
   val totalDistance: MutableLiveData<Float> = MutableLiveData()
+
+  val cp1Location: MutableLiveData<Location> = MutableLiveData()
+  val cp1Distance: MutableLiveData<Float> = MutableLiveData()
+
+  val cp2Location: MutableLiveData<Location> = MutableLiveData()
+  val cp2Distance: MutableLiveData<Float> = MutableLiveData()
 
   fun setPermissions(value: Boolean) {
     permissionGranted.postValue(value)
@@ -28,7 +36,16 @@ class AppViewModel : ViewModel() {
 
   fun addDistanceTravelled(from: Location?, to: Location?) {
     var distance = from?.distanceTo(to)
-    distance?.let { totalDistance.postValue(totalDistance.value?.plus(it)) }
+    distance?.let {
+      totalDistance.postValue(totalDistance.value?.plus(it))
+      if(cp1Location.value != null) {
+        cp1Distance.postValue(cp1Distance.value?.plus(it))
+      }
+
+      if(cp2Location.value != null) {
+        cp2Distance.postValue(cp2Distance.value?.plus(it))
+      }
+    }
   }
 
   init {
@@ -36,5 +53,7 @@ class AppViewModel : ViewModel() {
     permissionGranted.value = false
     locationEnabled.value = false
     totalDistance.value = 0f
+    cp1Distance.value = 0f
+    cp2Distance.value = 0f
   }
 }
