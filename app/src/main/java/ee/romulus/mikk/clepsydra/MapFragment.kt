@@ -61,58 +61,10 @@ class MapFragment : Fragment(), LocationEngineListener {
     }
 
     observe()
+    bindHandlers()
   }
 
-  private fun observe() {
-    observeText()
-    observeButtons()
-  }
-
-  private fun observeText() {
-    vm.totalDistance.observe(this, Observer { travelledFromStart.text = formatDistance(it) })
-    vm.cp1Distance.observe(this, Observer { travelledFromCP1.text = formatDistance(it) })
-    vm.cp2Distance.observe(this, Observer { travelledFromCP2.text = formatDistance(it) })
-
-    vm.location.observe(this, Observer {
-      if(vm.cp1Location.value != null) {
-        distanceFromCP1.text = formatDistance(it?.distanceTo(vm.cp1Location.value))
-      }
-
-      if(vm.cp2Location.value != null) {
-        distanceFromCP2.text = formatDistance(it?.distanceTo(vm.cp2Location.value))
-      }
-    })
-  }
-
-  private fun formatDistance(distance: Float?): String {
-    return if (distance != null) {
-      if(distance > 1000) {
-        getString(R.string.distance_travelled_km, distance / 1000f)
-      } else {
-        getString(R.string.distance_travelled_m, distance)
-      }
-    } else {
-      String()
-    }
-  }
-
-  private fun observeButtons() {
-    vm.enabled.observe(this, Observer {
-      if(it!!) {
-        button1.text = getString(R.string.button_stop)
-        button2.visibility = View.VISIBLE
-        button3.visibility = View.VISIBLE
-      } else {
-        button1.text = getString(R.string.button_start)
-        button2.visibility = View.GONE
-        button3.visibility = View.GONE
-
-        vm.startLocation.postValue(null)
-        vm.cp1Location.postValue(null)
-        vm.cp2Location.postValue(null)
-      }
-    })
-
+  private fun bindHandlers() {
     button1.setOnClickListener {
       vm.enabled.postValue(vm.enabled.value?.not())
 
@@ -146,6 +98,60 @@ class MapFragment : Fragment(), LocationEngineListener {
         }
       })
     }
+  }
+
+  private fun observe() {
+    observeText()
+    observeButtons()
+  }
+
+  private fun observeText() {
+    vm.totalDistance.observe(this, Observer { travelledFromStart.text = formatDistance(it) })
+    vm.cp1Distance.observe(this, Observer { travelledFromCP1.text = formatDistance(it) })
+    vm.cp2Distance.observe(this, Observer { travelledFromCP2.text = formatDistance(it) })
+
+    vm.location.observe(this, Observer {
+      when {
+          vm.cp1Location.value == null -> distanceFromCP1.text = String()
+          else -> distanceFromCP1.text = formatDistance(it?.distanceTo(vm.cp1Location.value))
+      }
+
+      when {
+          vm.cp2Location.value == null -> distanceFromCP1.text = String()
+          else -> distanceFromCP2.text = formatDistance(it?.distanceTo(vm.cp2Location.value))
+      }
+    })
+  }
+
+  private fun formatDistance(distance: Float?): String {
+    return when {
+        distance != null -> when {
+          distance > 1000 -> getString(R.string.distance_travelled_km, distance / 1000f)
+          else -> getString(R.string.distance_travelled_m, distance)
+        }
+        else -> String()
+    }
+  }
+
+  private fun observeButtons() {
+    vm.enabled.observe(this, Observer {
+      when {
+          it!! -> {
+            button1.text = getString(R.string.button_stop)
+            button2.visibility = View.VISIBLE
+            button3.visibility = View.VISIBLE
+          }
+          else -> {
+            button1.text = getString(R.string.button_start)
+            button2.visibility = View.GONE
+            button3.visibility = View.GONE
+
+            vm.startLocation.postValue(null)
+            vm.cp1Location.postValue(null)
+            vm.cp2Location.postValue(null)
+          }
+      }
+    })
   }
 
   @SuppressLint("MissingPermission")

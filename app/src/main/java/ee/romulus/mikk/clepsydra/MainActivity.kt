@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import ee.romulus.mikk.clepsydra.models.AppViewModel
 import ee.romulus.mikk.clepsydra.services.BoundLocationManager
+import ee.romulus.mikk.clepsydra.services.BoundNotificationCreator
 
 class MainActivity : FragmentActivity(), LocationListener {
   private lateinit var model: AppViewModel
@@ -18,6 +19,7 @@ class MainActivity : FragmentActivity(), LocationListener {
 
     model = ViewModelProviders.of(this).get(AppViewModel::class.java)
 
+    BoundNotificationCreator.bindNotificationManagerIn(this, applicationContext)
     insertGreeting()
     observe()
   }
