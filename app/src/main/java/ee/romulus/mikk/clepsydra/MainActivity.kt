@@ -19,13 +19,17 @@ class MainActivity : FragmentActivity(), LocationListener {
     model = ViewModelProviders.of(this).get(AppViewModel::class.java)
 
     insertGreeting()
-    observeModel()
+    observe()
   }
 
   private fun insertGreeting() {
     val beginTransaction = supportFragmentManager.beginTransaction()
     beginTransaction.add(R.id.fragment_container, GreetingFragment())
     beginTransaction.commit()
+  }
+
+  private fun observe() {
+    observeModel()
   }
 
   private fun observeModel() {
@@ -40,8 +44,10 @@ class MainActivity : FragmentActivity(), LocationListener {
   }
 
   override fun onLocationChanged(location: Location?) {
-    model.addDistanceTravelled(model.location.value, location)
-    model.lastLocation.postValue(model.location.value)
+    if(model.enabled.value!!) {
+      model.addDistanceTravelled(model.location.value, location)
+    }
+
     model.location.postValue(location)
   }
 

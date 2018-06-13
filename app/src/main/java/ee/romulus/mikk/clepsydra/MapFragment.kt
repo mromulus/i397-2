@@ -4,11 +4,9 @@ import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.location.Location
-import android.location.LocationListener
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.text.format.Formatter
-import android.util.Log
+import android.transition.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,19 +16,14 @@ import com.mapbox.mapboxsdk.geometry.LatLng
 import com.mapbox.mapboxsdk.maps.MapView
 import ee.romulus.mikk.clepsydra.models.AppViewModel
 import kotlinx.android.synthetic.main.fragment_map.*
-import ee.romulus.mikk.clepsydra.R.id.mapView
 import com.mapbox.mapboxsdk.plugins.locationlayer.LocationLayerPlugin
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.RenderMode
 import com.mapbox.android.core.location.LocationEngine
 import com.mapbox.android.core.location.LocationEngineListener
-import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
-import com.mapbox.mapboxsdk.Mapbox.getApplicationContext
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
-import ee.romulus.mikk.clepsydra.services.BoundLocationManager
-import ee.romulus.mikk.clepsydra.R.id.mapView
 import java.util.*
 
 class MapFragment : Fragment(), LocationEngineListener {
@@ -69,15 +62,37 @@ class MapFragment : Fragment(), LocationEngineListener {
       locationPlugin!!.cameraMode = CameraMode.TRACKING_GPS
     })
 
-    bindObservers()
+    observe()
   }
 
-  private fun bindObservers() {
+  private fun observe() {
+    observeText()
+    observeButtons()
+  }
+
+  private fun observeText() {
     vm.totalDistance.observe(this, Observer {
       val formatter = Formatter(StringBuilder(), Locale.UK)
 
-      distance.text = formatter.format("Travelled: %.02f m", it).toString()
+      distance.text = formatter.format(getString(R.string.distance_travelled), it).toString()
     })
+  }
+
+
+  private fun observeButtons() {
+    vm.enabled.observe(this, Observer {
+      if(it!!) {
+        button1.text = getString(R.string.button_stop)
+        button2.visibility = View.VISIBLE
+        button3.visibility = View.VISIBLE
+      } else {
+        button1.text = getString(R.string.button_start)
+        button2.visibility = View.GONE
+        button3.visibility = View.GONE
+      }
+    })
+
+    button1.setOnClickListener { vm.enabled.postValue(vm.enabled.value?.not()) }
   }
 
   @SuppressLint("MissingPermission")
