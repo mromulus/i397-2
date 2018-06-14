@@ -1,8 +1,6 @@
 package ee.romulus.mikk.clepsydra.models
 
-import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import android.arch.lifecycle.ViewModel
 import android.location.Location
@@ -44,6 +42,19 @@ class AppViewModel : ViewModel() {
 
       if(cp2Location.value != null) {
         cp2Distance.postValue(cp2Distance.value?.plus(it))
+      }
+    }
+  }
+
+  fun clickCP(i: Int) {
+    when(i) {
+      1 -> {
+        cp1Distance.postValue(0f)
+        cp1Location.postValue(location.value)
+      }
+      2 -> {
+        cp2Distance.postValue(0f)
+        cp2Location.postValue(location.value)
       }
     }
   }

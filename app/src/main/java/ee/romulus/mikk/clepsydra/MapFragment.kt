@@ -66,6 +66,7 @@ class MapFragment : Fragment(), LocationEngineListener {
 
   private fun bindHandlers() {
     button1.setOnClickListener {
+      vm.totalDistance.postValue(0f)
       vm.enabled.postValue(vm.enabled.value?.not())
 
       // get the location once
@@ -75,29 +76,12 @@ class MapFragment : Fragment(), LocationEngineListener {
           vm.location.removeObserver(this)
         }
       })
+
+
     }
 
-    button2.setOnClickListener {
-      // get the location once
-      vm.cp1Distance.postValue(0f)
-      vm.location.observe(this, object: Observer<Location> {
-        override fun onChanged(location: Location?) {
-          vm.cp1Location.postValue(location)
-          vm.location.removeObserver(this)
-        }
-      })
-    }
-
-    button3.setOnClickListener {
-      // get the location once
-      vm.cp2Distance.postValue(0f)
-      vm.location.observe(this, object: Observer<Location> {
-        override fun onChanged(location: Location?) {
-          vm.cp2Location.postValue(location)
-          vm.location.removeObserver(this)
-        }
-      })
-    }
+    button2.setOnClickListener { vm.clickCP(1) }
+    button3.setOnClickListener { vm.clickCP(2) }
   }
 
   private fun observe() {
@@ -112,24 +96,24 @@ class MapFragment : Fragment(), LocationEngineListener {
 
     vm.location.observe(this, Observer {
       when {
-          vm.cp1Location.value == null -> distanceFromCP1.text = String()
-          else -> distanceFromCP1.text = formatDistance(it?.distanceTo(vm.cp1Location.value))
+        vm.cp1Location.value == null -> distanceFromCP1.text = String()
+        else -> distanceFromCP1.text = formatDistance(it?.distanceTo(vm.cp1Location.value))
       }
 
       when {
-          vm.cp2Location.value == null -> distanceFromCP1.text = String()
-          else -> distanceFromCP2.text = formatDistance(it?.distanceTo(vm.cp2Location.value))
+        vm.cp2Location.value == null -> distanceFromCP1.text = String()
+        else -> distanceFromCP2.text = formatDistance(it?.distanceTo(vm.cp2Location.value))
       }
     })
   }
 
   private fun formatDistance(distance: Float?): String {
     return when {
-        distance != null -> when {
-          distance > 1000 -> getString(R.string.distance_travelled_km, distance / 1000f)
-          else -> getString(R.string.distance_travelled_m, distance)
-        }
-        else -> String()
+      distance != null -> when {
+        distance > 1000 -> getString(R.string.distance_travelled_km, distance / 1000f)
+        else -> getString(R.string.distance_travelled_m, distance)
+      }
+      else -> String()
     }
   }
 
