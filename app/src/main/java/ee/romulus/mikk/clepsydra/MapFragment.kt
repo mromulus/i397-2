@@ -22,7 +22,11 @@ import com.mapbox.android.core.location.LocationEngineListener
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.android.core.location.LocationEnginePriority
 import com.mapbox.android.core.location.LocationEngineProvider
+import com.mapbox.mapboxsdk.annotations.Marker
 import com.mapbox.mapboxsdk.plugins.locationlayer.modes.CameraMode
+import com.mapbox.mapboxsdk.annotations.MarkerOptions
+
+
 
 class MapFragment : Fragment(), LocationEngineListener {
   private lateinit var vm: AppViewModel
@@ -30,6 +34,9 @@ class MapFragment : Fragment(), LocationEngineListener {
   private var map: MapboxMap? = null
   private var locationPlugin: LocationLayerPlugin? = null
   private var locationEngine: LocationEngine? = null
+
+  private var cp1marker: Marker? = null
+  private var cp2marker: Marker? = null
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                             savedInstanceState: Bundle?): View? {
@@ -80,8 +87,25 @@ class MapFragment : Fragment(), LocationEngineListener {
 
     }
 
-    button2.setOnClickListener { vm.clickCP(1) }
-    button3.setOnClickListener { vm.clickCP(2) }
+    button2.setOnClickListener {
+      if(cp1marker != null) {
+        map!!.removeMarker(cp1marker!!)
+      }
+      cp1marker = map!!.addMarker(MarkerOptions()
+          .position(LatLng(vm.location.value!!.latitude, vm.location.value!!.longitude))
+          .title("CP1"))
+
+      vm.clickCP(1)
+    }
+    button3.setOnClickListener {
+      if(cp2marker != null) {
+        map!!.removeMarker(cp2marker!!)
+      }
+      cp2marker = map!!.addMarker(MarkerOptions()
+          .position(LatLng(vm.location.value!!.latitude, vm.location.value!!.longitude))
+          .title("CP2"))
+      vm.clickCP(2)
+    }
   }
 
   private fun observe() {
