@@ -10,6 +10,7 @@ import android.content.Context
 import android.location.Location
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import android.support.v4.app.NotificationManagerCompat
 import ee.romulus.mikk.clepsydra.R
 import ee.romulus.mikk.clepsydra.models.AppViewModel
 
@@ -41,6 +42,10 @@ internal class BoundLocationOwner(lifecycleOwner: LifecycleOwner, private val co
   }
 
   private fun initChannel() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      notificationManager = context.getSystemService(NotificationManager::class.java)
+    }
+
     // Create the NotificationChannel, but only on API 26+ because
     // the NotificationChannel class is new and not in the support library
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
