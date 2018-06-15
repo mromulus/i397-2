@@ -59,6 +59,7 @@ class MapFragment : Fragment(), LocationEngineListener {
 
       map!!.uiSettings.isZoomControlsEnabled = false
       map!!.uiSettings.setAllGesturesEnabled(false)
+      map!!.uiSettings.isZoomGesturesEnabled = true
 
       enableLocation()
 

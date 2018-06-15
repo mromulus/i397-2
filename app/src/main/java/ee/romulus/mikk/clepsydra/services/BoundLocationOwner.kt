@@ -13,7 +13,7 @@ import android.support.v4.app.NotificationCompat
 import android.support.v4.app.NotificationManagerCompat
 import ee.romulus.mikk.clepsydra.R
 import ee.romulus.mikk.clepsydra.models.AppViewModel
-
+import android.widget.RemoteViews
 
 internal class BoundLocationOwner(lifecycleOwner: LifecycleOwner, private val context: Context, private val model: AppViewModel) : LifecycleObserver {
 
@@ -63,10 +63,12 @@ internal class BoundLocationOwner(lifecycleOwner: LifecycleOwner, private val co
   private fun initBuilder() {
     mBuilder = NotificationCompat.Builder(context, channelID)
         .setSmallIcon(android.R.drawable.ic_menu_mylocation)
-        .setContentTitle("Distance travelled | distance from")
-        .setContentText("")
+//        .setContentTitle("Distance travelled | distance from")
+//        .setContentText("")
         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        .setStyle(NotificationCompat.DecoratedCustomViewStyle())
+        .setCustomContentView(generateContentView())
         .setSound(null)
         .setContentIntent(
             PendingIntent.getActivity(
@@ -76,30 +78,28 @@ internal class BoundLocationOwner(lifecycleOwner: LifecycleOwner, private val co
                 0
             )
         )
-        .addAction(
-            android.R.drawable.ic_menu_add,
-            "CP1",
-            PendingIntent.getBroadcast(context, 1237, Intent("ee.romulus.mikk.clepsydra.cp") ,0)
-        )
-        .addAction(
-            android.R.drawable.ic_menu_add,
-            "CP2",
-            PendingIntent.getBroadcast(context, 8734, Intent("ee.romulus.mikk.clepsydra.cp2") ,0)
-        )
+  }
+
+  private fun generateContentView(): RemoteViews? {
+    val contentView = RemoteViews(context.packageName, R.layout.notification)
+    contentView.setTextViewText(R.id.notText, String.format(
+        "Start: %s  CP1: %s | %s  CP2: %s | %s",
+        formatDistance(model.totalDistance.value),
+        formatDistance(model.cp1Distance.value),
+        formatDistance(model.cp1Location.value?.distanceTo(model.location.value)),
+        formatDistance(model.cp2Distance.value),
+        formatDistance(model.cp2Location.value?.distanceTo(model.location.value))
+    ))
+
+    contentView.setOnClickPendingIntent(R.id.notcp1, PendingIntent.getBroadcast(context, 1237, Intent("ee.romulus.mikk.clepsydra.cp") ,0))
+    contentView.setOnClickPendingIntent(R.id.notcp2, PendingIntent.getBroadcast(context, 8734, Intent("ee.romulus.mikk.clepsydra.cp2") ,0))
+
+    return contentView
   }
 
 
   private fun updateNotification() {
-    mBuilder.setContentText(
-      String.format(
-        "Start: %s  CP1: %s | %s  CP2: %s | %s",
-          formatDistance(model.totalDistance.value),
-          formatDistance(model.cp1Distance.value),
-          formatDistance(model.cp1Location.value?.distanceTo(model.location.value)),
-          formatDistance(model.cp2Distance.value),
-          formatDistance(model.cp2Location.value?.distanceTo(model.location.value))
-      )
-    )
+    mBuilder.setCustomContentView(generateContentView())
     notificationManager.notify(notificationId, mBuilder.build())
   }
 
